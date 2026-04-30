@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Candy Joy Chocolate"
+version = "1.0.0"
+id = "artifacts/candy-joy"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23000
+
+[services.development]
+run = "pnpm --filter @workspace/candy-joy run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/candy-joy", "run", "build" ]
+publicDir = "artifacts/candy-joy/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23000"
+BASE_PATH = "/"

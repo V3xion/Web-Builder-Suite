@@ -1,0 +1,162 @@
+Build a complete, production-ready full-stack website for a chocolate and gift shop called "Candy Joy Chocolate" (Arabic: كاندي جوي شوكوليت). This must include a fully functional frontend, a working backend with a REST API, a database, and a secure admin panel. Every button, form, and interactive element must be fully functional — no placeholders, no dummy actions.
+
+==============================================
+TECH STACK
+==============================================
+Frontend: React.js (or Next.js) + Tailwind CSS
+Backend: Node.js + Express.js
+Database: MongoDB (or PostgreSQL)
+Auth: JWT-based authentication for admin
+File uploads: Multer or Cloudinary (for product images)
+Email: Nodemailer (for contact form)
+Deployment-ready: include .env config, README, and folder structure
+
+==============================================
+DESIGN SYSTEM
+==============================================
+Color palette:
+- Background: #1a0a00 (deep chocolate), #fdf6ed (cream white)
+- Accent: #c8922a (gold), #f0c060 (light gold)
+- Text: #2c1a0e (dark brown), #fff8f0 (off-white)
+Fonts: "Playfair Display" (headings) + "Inter" (body) from Google Fonts
+Animations: Scroll fade-in, slide-up on cards, hover lift on products, hero shimmer CTA, sticky translucent navbar on scroll
+Mobile-first, fully responsive, hamburger menu on mobile
+Smooth page transitions (fade between routes)
+
+==============================================
+FRONTEND PAGES
+==============================================
+
+1. HOME PAGE
+- Full-width hero with dark gradient overlay image, heading "Indulge in Every Moment", gold shimmer CTA button "Explore Our Collection" (links to Menu page)
+- Tagline section: "Premium imported chocolates, sweets & floral gifts — all in one place."
+- "Why Choose Us" — 3 animated icon cards: Imported Selection, Floral Arrangements, Friendly Service
+- Featured products grid (pulled from database, 6 cards) with hover zoom, add-to-cart or "Order via WhatsApp" button per card
+- Reviews section (pulled from database)
+- Footer
+
+2. MENU / SHOP PAGE
+- Heading: "Our Collection"
+- Filter tabs: All | Chocolates | Imported Sweets | Flowers & Gifts — each tab filters products dynamically from the backend API
+- Product grid: image, name, category, description, price — all from database
+- Each card has a working "Order via WhatsApp" button that opens: https://wa.me/971567772003 with the product name pre-filled in the message
+- Search bar that filters products by name in real-time
+- Sticky floating WhatsApp button (bottom right) on all pages
+
+3. ABOUT US PAGE
+- Brand story text
+- Values section: Quality | Variety | Warmth
+- Visual timeline: 2019 – Founded, 2021 – Expanded, 2023 – Growing
+- Store photo section
+
+4. CONTACT PAGE
+- Fully working contact form: Name, Email, Message, Submit button
+- On submit: saves message to database AND sends email notification to store owner via Nodemailer
+- Show success/error toast notification after submission
+- Embedded Google Maps iframe for: Refah Gift Market, Industrial Area, Shiebat Al Salam, Abu Dhabi
+- Clickable phone number: tel:+971567772003
+- Social links: Instagram and TikTok (icons in footer and contact page)
+
+5. REVIEWS SECTION (on Home + About)
+Display real reviews from database. Seed these on first run:
+- Nasser Alameri (5 stars): "Candy Joy offers a decent selection of chocolates and a variety of flower arrangements, making it a convenient spot for gifts. The service is usually friendly and helpful."
+- Al-Shamsi (3 stars): "Candy Joy Chocolate sells a selection of imported sweets and products. A good option if you're looking for something quick or need specific imported sweets."
+Card slider or stacked quote cards with star ratings.
+
+==============================================
+BACKEND — REST API (Node.js + Express)
+==============================================
+Base URL: /api
+
+PRODUCTS
+  GET    /api/products              — get all products (supports ?category= and ?search= filters)
+  GET    /api/products/:id          — get single product
+  POST   /api/products              — create product (admin only, JWT protected)
+  PUT    /api/products/:id          — update product (admin only)
+  DELETE /api/products/:id          — delete product (admin only)
+
+REVIEWS
+  GET    /api/reviews               — get all reviews
+  POST   /api/reviews               — submit a new review (public)
+  DELETE /api/reviews/:id           — delete review (admin only)
+
+MESSAGES (Contact Form)
+  GET    /api/messages              — get all contact messages (admin only)
+  POST   /api/messages              — submit contact form (public, sends email)
+  DELETE /api/messages/:id          — delete message (admin only)
+
+AUTH
+  POST   /api/auth/login            — admin login, returns JWT token
+  POST   /api/auth/logout           — logout (clear token)
+
+Seed the database on first run with at least 8 sample products and the 2 real reviews above.
+
+==============================================
+ADMIN PANEL (protected, /admin route)
+==============================================
+Secure login page with username + password (use JWT). Default credentials in .env file.
+
+After login, admin dashboard with sidebar navigation:
+
+DASHBOARD
+- Stats cards: Total Products, Total Reviews, Total Messages, Average Rating
+- Recent messages preview (last 5)
+- Quick action buttons: Add Product, View Messages
+
+PRODUCTS MANAGER
+- Table of all products with columns: Image, Name, Category, Price, Actions
+- Working "Edit" button — opens modal/form with pre-filled data, saves changes to DB
+- Working "Delete" button — confirms and deletes from DB
+- Working "Add New Product" button — opens form: Name, Category, Description, Price, Image upload (Cloudinary or local)
+- All changes reflect immediately on the frontend
+
+REVIEWS MANAGER
+- Table of all reviews: Name, Rating (stars), Comment, Date, Actions
+- Working "Delete" button per review
+- Approve/hide toggle per review (show only approved on frontend)
+
+MESSAGES MANAGER
+- Table of all contact form submissions: Name, Email, Message, Date, Actions
+- Working "Delete" button
+- Mark as read toggle
+
+SETTINGS PAGE
+- Update store phone number, address, social media links (Instagram URL, TikTok URL)
+- These values are stored in DB and reflected on the frontend dynamically
+- Save button fully functional
+
+LOGOUT button in sidebar — clears JWT and redirects to login
+
+==============================================
+BUSINESS INFO (hardcode as defaults)
+==============================================
+Store Name: Candy Joy Chocolate | كاندي جوي شوكوليت
+Phone: 056 777 2003
+WhatsApp: https://wa.me/971567772003
+Location: Refah Gift Market, Industrial Area, Shiebat Al Salam, Abu Dhabi
+Google Maps Plus Code: 6P2X+G9 Al Ain, Abu Dhabi
+Instagram: placeholder (updatable from admin)
+TikTok: placeholder (updatable from admin)
+Google Rating: 3.0 / 5
+
+==============================================
+FOOTER (on all pages)
+==============================================
+- Logo + tagline
+- Quick links: Home, Menu, About, Contact
+- Phone (clickable), Location text
+- Social icons: Instagram, TikTok
+- Copyright: © 2025 Candy Joy Chocolate. All rights reserved.
+
+==============================================
+REQUIREMENTS
+==============================================
+- Every single button must trigger a real action (no dead buttons)
+- All forms must validate inputs and show error/success messages
+- All data must be stored in and retrieved from the database
+- Admin panel must be fully protected — redirect to login if not authenticated
+- Include a working .env.example file with all required environment variables
+- Include a README with setup instructions (npm install, seed script, start commands)
+- Use Unsplash API or placeholder images from https://source.unsplash.com for products
+- Add CORS configuration for frontend-backend communication
+- Use loading spinners on all async actions
