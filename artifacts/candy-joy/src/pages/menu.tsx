@@ -114,7 +114,7 @@ export default function Menu() {
                         {product.price} <span className="text-sm font-normal text-muted-foreground">{t("menu.aed")}</span>
                       </span>
                       <a
-                        href={`https://wa.me/971567772003?text=Hi, I would like to order: ${encodeURIComponent(product.name)}`}
+                        href={`https://wa.me/971567772003?text=${encodeURIComponent(`Hi, I would like to order: ${product.name}`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/90 transition-colors"
