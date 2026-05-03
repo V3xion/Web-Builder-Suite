@@ -134,7 +134,7 @@ export default function Home() {
                       </div>
                       <p className="text-muted-foreground text-sm mb-6 line-clamp-2">{isArabic && product.descriptionAr ? product.descriptionAr : product.description}</p>
                       <a
-                        href={`https://wa.me/971567772003?text=Hi, I would like to order: ${encodeURIComponent(product.name)}`}
+                        href={`https://wa.me/971567772003?text=${encodeURIComponent(`Hi, I would like to order: ${product.name}`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full inline-flex justify-center items-center px-4 py-2 bg-secondary text-secondary-foreground font-medium rounded-lg hover:bg-secondary/90 transition-colors"
