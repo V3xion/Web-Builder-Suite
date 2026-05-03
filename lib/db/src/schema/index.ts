@@ -72,3 +72,26 @@ export const settingsTable = pgTable("settings", {
 });
 
 export type Settings = typeof settingsTable.$inferSelect;
+
+export const usersTable = pgTable("users", {
+  id: serial("id").primaryKey(),
+  fullName: text("full_name").notNull(),
+  email: text("email").notNull().unique(),
+  phone: text("phone").notNull().default(""),
+  passwordHash: text("password_hash").notNull(),
+  resetToken: text("reset_token"),
+  resetTokenExpiry: timestamp("reset_token_expiry"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertUserSchema = createInsertSchema(usersTable).omit({
+  id: true,
+  passwordHash: true,
+  resetToken: true,
+  resetTokenExpiry: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof usersTable.$inferSelect;

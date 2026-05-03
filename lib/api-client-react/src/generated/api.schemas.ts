@@ -99,6 +99,54 @@ export interface UpdateSettingsBody {
   tiktokUrl?: string;
 }
 
+export interface RegisterUserBody {
+  fullName: string;
+  email: string;
+  phone: string;
+  password: string;
+}
+
+export interface LoginUserBody {
+  email: string;
+  password: string;
+}
+
+export interface UserProfile {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  createdAt: string;
+}
+
+export interface UserAuthResponse {
+  token: string;
+  user: UserProfile;
+}
+
+export interface UpdateUserProfileBody {
+  fullName?: string;
+  phone?: string;
+}
+
+export interface ChangePasswordBody {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ForgotPasswordBody {
+  email: string;
+}
+
+export interface ResetPasswordBody {
+  token: string;
+  newPassword: string;
+}
+
+export interface SuccessMessage {
+  message: string;
+}
+
 export interface AdminStats {
   totalProducts: number;
   totalReviews: number;

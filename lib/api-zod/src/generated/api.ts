@@ -254,6 +254,97 @@ export const UpdateSettingsResponse = zod.object({
 });
 
 /**
+ * @summary Register a new user account
+ */
+export const RegisterUserBody = zod.object({
+  fullName: zod.string(),
+  email: zod.string(),
+  phone: zod.string(),
+  password: zod.string(),
+});
+
+/**
+ * @summary Login as a user
+ */
+export const LoginUserBody = zod.object({
+  email: zod.string(),
+  password: zod.string(),
+});
+
+export const LoginUserResponse = zod.object({
+  token: zod.string(),
+  user: zod.object({
+    id: zod.number(),
+    fullName: zod.string(),
+    email: zod.string(),
+    phone: zod.string(),
+    createdAt: zod.string(),
+  }),
+});
+
+/**
+ * @summary Get current user profile
+ */
+export const GetUserProfileResponse = zod.object({
+  id: zod.number(),
+  fullName: zod.string(),
+  email: zod.string(),
+  phone: zod.string(),
+  createdAt: zod.string(),
+});
+
+/**
+ * @summary Update user profile
+ */
+export const UpdateUserProfileBody = zod.object({
+  fullName: zod.string().optional(),
+  phone: zod.string().optional(),
+});
+
+export const UpdateUserProfileResponse = zod.object({
+  id: zod.number(),
+  fullName: zod.string(),
+  email: zod.string(),
+  phone: zod.string(),
+  createdAt: zod.string(),
+});
+
+/**
+ * @summary Change user password
+ */
+export const ChangeUserPasswordBody = zod.object({
+  currentPassword: zod.string(),
+  newPassword: zod.string(),
+});
+
+export const ChangeUserPasswordResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
+ * @summary Request password reset
+ */
+export const ForgotPasswordBody = zod.object({
+  email: zod.string(),
+});
+
+export const ForgotPasswordResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
+ * @summary Reset password with token
+ */
+export const ResetPasswordBody = zod.object({
+  token: zod.string(),
+  newPassword: zod.string(),
+});
+
+export const ResetPasswordResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
  * @summary Get dashboard stats (admin only)
  */
 export const GetAdminStatsResponse = zod.object({

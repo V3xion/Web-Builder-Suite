@@ -18,6 +18,8 @@ tags:
     description: Contact message operations
   - name: auth
     description: Authentication operations
+  - name: users
+    description: User account operations
   - name: settings
     description: Store settings operations
   - name: admin
@@ -368,6 +370,167 @@ paths:
         "401":
           description: Unauthorized
 
+  /users/register:
+    post:
+      operationId: registerUser
+      tags: [users]
+      summary: Register a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterUserBody"
+      responses:
+        "201":
+          description: Created user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuthResponse"
+        "409":
+          description: Email already in use
+
+  /users/login:
+    post:
+      operationId: loginUser
+      tags: [users]
+      summary: Login as a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUserBody"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /users/logout:
+    post:
+      operationId: logoutUser
+      tags: [users]
+      summary: Logout current user
+      responses:
+        "200":
+          description: Logged out
+
+  /users/me:
+    get:
+      operationId: getUserProfile
+      tags: [users]
+      summary: Get current user profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Unauthorized
+
+  /users/profile:
+    put:
+      operationId: updateUserProfile
+      tags: [users]
+      summary: Update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserProfileBody"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Unauthorized
+
+  /users/password:
+    put:
+      operationId: changeUserPassword
+      tags: [users]
+      summary: Change user password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordBody"
+      responses:
+        "200":
+          description: Password changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessMessage"
+        "400":
+          description: Current password incorrect
+        "401":
+          description: Unauthorized
+
+  /users/forgot-password:
+    post:
+      operationId: forgotPassword
+      tags: [users]
+      summary: Request password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordBody"
+      responses:
+        "200":
+          description: Reset email sent (always returns 200 to avoid enumeration)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessMessage"
+
+  /users/reset-password:
+    post:
+      operationId: resetPassword
+      tags: [users]
+      summary: Reset password with token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordBody"
+      responses:
+        "200":
+          description: Password reset
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessMessage"
+        "400":
+          description: Invalid or expired token
+
+  /users/account:
+    delete:
+      operationId: deleteUserAccount
+      tags: [users]
+      summary: Delete own account
+      responses:
+        "204":
+          description: Account deleted
+        "401":
+          description: Unauthorized
+
   /admin/stats:
     get:
       operationId: getAdminStats
@@ -603,6 +766,111 @@ components:
           type: string
         tiktokUrl:
           type: string
+
+    RegisterUserBody:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        password:
+          type: string
+      required:
+        - fullName
+        - email
+        - phone
+        - password
+
+    LoginUserBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - fullName
+        - email
+        - phone
+        - createdAt
+
+    UserAuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserProfile"
+      required:
+        - token
+        - user
+
+    UpdateUserProfileBody:
+      type: object
+      properties:
+        fullName:
+          type: string
+        phone:
+          type: string
+
+    ChangePasswordBody:
+      type: object
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+      required:
+        - currentPassword
+        - newPassword
+
+    ForgotPasswordBody:
+      type: object
+      properties:
+        email:
+          type: string
+      required:
+        - email
+
+    ResetPasswordBody:
+      type: object
+      properties:
+        token:
+          type: string
+        newPassword:
+          type: string
+      required:
+        - token
+        - newPassword
+
+    SuccessMessage:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
 
     AdminStats:
       type: object

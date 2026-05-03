@@ -1,0 +1,98 @@
+Add a complete user authentication system to the Candy Joy Chocolate website with the following full specifications. Every button must be functional and all transitions must be smooth.
+
+---
+
+## AUTHENTICATION SYSTEM REQUIREMENTS
+
+### 1. NAVBAR UPDATES
+- Add a "Login / Register" button in the top navigation bar (next to the Arabic language toggle)
+- Once logged in, replace it with a user avatar icon + the user's first name, with a dropdown showing: "My Account", "My Orders", and "Logout"
+- Make it fully responsive on mobile
+
+---
+
+### 2. PAGES TO CREATE
+
+#### /register — Registration Page
+- Full Name field
+- Email Address field
+- Phone Number field (with UAE +971 prefix selector)
+- Password field (with show/hide toggle)
+- Confirm Password field (with show/hide toggle)
+- "Create Account" button (primary, full width)
+- Password strength indicator (weak / medium / strong)
+- Checkbox: "I agree to the Terms & Conditions and Privacy Policy"
+- Link: "Already have an account? Login"
+- Success: show a toast notification "Account created successfully! Welcome to Candy Joy 🍫" and redirect to home page
+- Error handling: show inline field errors (e.g., "Email already in use", "Passwords do not match")
+
+#### /login — Login Page
+- Email Address field
+- Password field (with show/hide toggle)
+- "Remember Me" checkbox
+- "Login" button (primary, full width)
+- "Forgot Password?" link (redirects to /forgot-password)
+- Divider with "or"
+- Link: "Don't have an account? Register"
+- Success: toast notification "Welcome back, [Name]! 🍫" and redirect to home page
+- Error: show "Invalid email or password" message
+
+#### /forgot-password — Forgot Password Page
+- Email Address field
+- "Send Reset Link" button
+- Success message: "A password reset link has been sent to your email."
+- Back to Login link
+
+#### /account — My Account Page (protected, only accessible when logged in)
+- Display user's full name, email, phone
+- "Edit Profile" button that opens an inline editable form
+- "Change Password" section with: Current Password, New Password, Confirm New Password
+- Save Changes button with success toast
+- Danger zone: "Delete My Account" button with a confirmation modal
+
+---
+
+### 3. AUTHENTICATION LOGIC (use Supabase)
+- Use Supabase Auth for all authentication (email + password)
+- Store user profile (full name, phone) in a `profiles` table in Supabase
+- Protect the /account route — redirect to /login if not authenticated
+- Persist login session across page refreshes
+- On logout, clear session and redirect to home
+
+---
+
+### 4. DESIGN REQUIREMENTS
+- Match the existing Candy Joy brand aesthetic: warm, luxurious, chocolate & rose tones
+- Use the same font and color palette as the existing site
+- All form inputs should have smooth focus transitions and border glow effects
+- Buttons should have hover animations consistent with the rest of the site
+- Add a decorative chocolate/floral illustration or background pattern on auth pages
+- Auth pages should be centered cards with subtle drop shadows
+- Mobile-first and fully responsive
+
+---
+
+### 5. FORM VALIDATION (client-side)
+- All fields required — show red inline error if left empty on submit
+- Email must be valid format
+- Password must be at least 8 characters, contain 1 uppercase, 1 number
+- Phone must be valid UAE format
+- Passwords must match on register
+
+---
+
+### 6. TOAST NOTIFICATIONS
+- Use a toast/snackbar system for all success and error feedback
+- Position: top-right
+- Auto-dismiss after 4 seconds
+- Style to match the site's warm color palette
+
+---
+
+### 7. LOADING STATES
+- All buttons must show a spinner/loading state while API calls are in progress
+- Disable the button during submission to prevent double clicks
+
+---
+
+Make sure every single button is functional, all routes work, and the entire system is wired end-to-end with Supabase.
