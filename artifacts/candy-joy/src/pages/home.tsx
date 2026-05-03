@@ -14,7 +14,8 @@ const CATEGORY_KEYS: Record<string, string> = {
 };
 
 export default function Home() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language.startsWith("ar");
   const { data: products, isLoading: isLoadingProducts } = useListProducts({ featured: true });
   const { data: reviews, isLoading: isLoadingReviews } = useListReviews();
 
@@ -128,10 +129,10 @@ export default function Home() {
                     </div>
                     <div className="p-6">
                       <div className="flex justify-between items-start mb-2">
-                        <h3 className="text-xl font-serif font-semibold">{product.name}</h3>
+                        <h3 className="text-xl font-serif font-semibold">{isArabic && product.nameAr ? product.nameAr : product.name}</h3>
                         <span className="text-primary font-semibold">{product.price} {t("featured.aed")}</span>
                       </div>
-                      <p className="text-muted-foreground text-sm mb-6 line-clamp-2">{product.description}</p>
+                      <p className="text-muted-foreground text-sm mb-6 line-clamp-2">{isArabic && product.descriptionAr ? product.descriptionAr : product.description}</p>
                       <a
                         href={`https://wa.me/971567772003?text=Hi, I would like to order: ${encodeURIComponent(product.name)}`}
                         target="_blank"

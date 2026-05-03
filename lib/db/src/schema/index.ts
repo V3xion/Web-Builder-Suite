@@ -13,8 +13,10 @@ import { z } from "zod/v4";
 export const productsTable = pgTable("products", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  nameAr: text("name_ar"),
   category: text("category").notNull(),
   description: text("description").notNull(),
+  descriptionAr: text("description_ar"),
   price: numeric("price", { precision: 10, scale: 2 }).notNull(),
   imageUrl: text("image_url").notNull(),
   featured: boolean("featured").notNull().default(false),

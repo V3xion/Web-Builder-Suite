@@ -14,7 +14,8 @@ const CATEGORY_KEYS: Record<string, string> = {
 };
 
 export default function Menu() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language.startsWith("ar");
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -106,8 +107,8 @@ export default function Menu() {
                   </div>
                   <div className="p-6">
                     <div className="text-xs font-medium text-primary mb-2 uppercase tracking-wider">{CATEGORY_KEYS[product.category] ? t(CATEGORY_KEYS[product.category]) : product.category}</div>
-                    <h3 className="text-lg font-serif font-semibold mb-2 line-clamp-1">{product.name}</h3>
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2 h-10">{product.description}</p>
+                    <h3 className="text-lg font-serif font-semibold mb-2 line-clamp-1">{isArabic && product.nameAr ? product.nameAr : product.name}</h3>
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2 h-10">{isArabic && product.descriptionAr ? product.descriptionAr : product.description}</p>
                     <div className="flex items-center justify-between mt-auto">
                       <span className="text-xl font-bold text-foreground">
                         {product.price} <span className="text-sm font-normal text-muted-foreground">{t("menu.aed")}</span>

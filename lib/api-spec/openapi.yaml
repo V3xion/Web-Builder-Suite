@@ -628,10 +628,16 @@ components:
           type: integer
         name:
           type: string
+        nameAr:
+          type: string
+          nullable: true
         category:
           type: string
         description:
           type: string
+        descriptionAr:
+          type: string
+          nullable: true
         price:
           type: number
         imageUrl:
@@ -655,9 +661,13 @@ components:
       properties:
         name:
           type: string
+        nameAr:
+          type: string
         category:
           type: string
         description:
+          type: string
+        descriptionAr:
           type: string
         price:
           type: number

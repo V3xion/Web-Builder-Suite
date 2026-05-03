@@ -26,8 +26,10 @@ export const ListProductsQueryParams = zod.object({
 export const ListProductsResponseItem = zod.object({
   id: zod.number(),
   name: zod.string(),
+  nameAr: zod.string().nullish(),
   category: zod.string(),
   description: zod.string(),
+  descriptionAr: zod.string().nullish(),
   price: zod.number(),
   imageUrl: zod.string(),
   featured: zod.boolean(),
@@ -40,8 +42,10 @@ export const ListProductsResponse = zod.array(ListProductsResponseItem);
  */
 export const CreateProductBody = zod.object({
   name: zod.string(),
+  nameAr: zod.string().optional(),
   category: zod.string(),
   description: zod.string(),
+  descriptionAr: zod.string().optional(),
   price: zod.number(),
   imageUrl: zod.string(),
   featured: zod.boolean().optional(),
@@ -57,8 +61,10 @@ export const GetProductParams = zod.object({
 export const GetProductResponse = zod.object({
   id: zod.number(),
   name: zod.string(),
+  nameAr: zod.string().nullish(),
   category: zod.string(),
   description: zod.string(),
+  descriptionAr: zod.string().nullish(),
   price: zod.number(),
   imageUrl: zod.string(),
   featured: zod.boolean(),
@@ -74,8 +80,10 @@ export const UpdateProductParams = zod.object({
 
 export const UpdateProductBody = zod.object({
   name: zod.string(),
+  nameAr: zod.string().optional(),
   category: zod.string(),
   description: zod.string(),
+  descriptionAr: zod.string().optional(),
   price: zod.number(),
   imageUrl: zod.string(),
   featured: zod.boolean().optional(),
@@ -84,8 +92,10 @@ export const UpdateProductBody = zod.object({
 export const UpdateProductResponse = zod.object({
   id: zod.number(),
   name: zod.string(),
+  nameAr: zod.string().nullish(),
   category: zod.string(),
   description: zod.string(),
+  descriptionAr: zod.string().nullish(),
   price: zod.number(),
   imageUrl: zod.string(),
   featured: zod.boolean(),

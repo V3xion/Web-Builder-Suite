@@ -68,8 +68,10 @@ router.post("/products", requireAdmin, async (req, res) => {
     .insert(productsTable)
     .values({
       name: parsed.data.name,
+      nameAr: parsed.data.nameAr ?? null,
       category: parsed.data.category,
       description: parsed.data.description,
+      descriptionAr: parsed.data.descriptionAr ?? null,
       price: String(parsed.data.price),
       imageUrl: parsed.data.imageUrl,
       featured: parsed.data.featured ?? false,
@@ -96,8 +98,10 @@ router.put("/products/:id", requireAdmin, async (req, res) => {
     .update(productsTable)
     .set({
       name: bodyParsed.data.name,
+      nameAr: bodyParsed.data.nameAr ?? null,
       category: bodyParsed.data.category,
       description: bodyParsed.data.description,
+      descriptionAr: bodyParsed.data.descriptionAr ?? null,
       price: String(bodyParsed.data.price),
       imageUrl: bodyParsed.data.imageUrl,
       featured: bodyParsed.data.featured ?? false,

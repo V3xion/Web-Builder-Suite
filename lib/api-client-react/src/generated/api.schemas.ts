@@ -12,8 +12,10 @@ export interface HealthStatus {
 export interface Product {
   id: number;
   name: string;
+  nameAr?: string | null;
   category: string;
   description: string;
+  descriptionAr?: string | null;
   price: number;
   imageUrl: string;
   featured: boolean;
@@ -22,8 +24,10 @@ export interface Product {
 
 export interface CreateProductBody {
   name: string;
+  nameAr?: string;
   category: string;
   description: string;
+  descriptionAr?: string;
   price: number;
   imageUrl: string;
   featured?: boolean;

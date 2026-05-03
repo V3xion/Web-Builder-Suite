@@ -183,8 +183,10 @@ function StatCard({ title, value, icon: Icon, highlight = false }: { title: stri
 
 const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
+  nameAr: z.string().optional().or(z.literal('')),
   category: z.string().min(1, "Category is required"),
   description: z.string().min(1, "Description is required"),
+  descriptionAr: z.string().optional().or(z.literal('')),
   price: z.coerce.number().min(0, "Price must be positive"),
   imageUrl: z.string().url("Must be a valid URL").optional().or(z.literal('')),
   featured: z.boolean().default(false),
@@ -203,12 +205,16 @@ function ProductsTab() {
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
-    defaultValues: { name: "", category: "", description: "", price: 0, imageUrl: "", featured: false }
+    defaultValues: { name: "", nameAr: "", category: "", description: "", descriptionAr: "", price: 0, imageUrl: "", featured: false }
   });
 
   const onSubmit = (values: z.infer<typeof productSchema>) => {
-    // Ensure imageUrl is a string, not undefined, since backend schema might expect it
-    const payload = { ...values, imageUrl: values.imageUrl || "" };
+    const payload = {
+      ...values,
+      imageUrl: values.imageUrl || "",
+      nameAr: values.nameAr || undefined,
+      descriptionAr: values.descriptionAr || undefined,
+    };
     if (editingId) {
       updateProduct.mutate({ id: editingId, data: payload }, {
         onSuccess: () => {
@@ -232,8 +238,10 @@ function ProductsTab() {
     setEditingId(product.id);
     form.reset({
       name: product.name,
+      nameAr: product.nameAr ?? "",
       category: product.category,
       description: product.description,
+      descriptionAr: product.descriptionAr ?? "",
       price: product.price,
       imageUrl: product.imageUrl,
       featured: product.featured,
@@ -243,7 +251,7 @@ function ProductsTab() {
 
   const handleAddNew = () => {
     setEditingId(null);
-    form.reset({ name: "", category: "", description: "", price: 0, imageUrl: "", featured: false });
+    form.reset({ name: "", nameAr: "", category: "", description: "", descriptionAr: "", price: 0, imageUrl: "", featured: false });
     setIsDialogOpen(true);
   };
 
@@ -274,9 +282,14 @@ function ProductsTab() {
             </DialogHeader>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField control={form.control} name="name" render={({ field }) => (
-                  <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage/></FormItem>
-                )} />
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField control={form.control} name="name" render={({ field }) => (
+                    <FormItem><FormLabel>Name (EN)</FormLabel><FormControl><Input placeholder="English name" {...field} /></FormControl><FormMessage/></FormItem>
+                  )} />
+                  <FormField control={form.control} name="nameAr" render={({ field }) => (
+                    <FormItem><FormLabel>الاسم (AR)</FormLabel><FormControl><Input dir="rtl" placeholder="الاسم بالعربي" {...field} /></FormControl><FormMessage/></FormItem>
+                  )} />
+                </div>
                 <FormField control={form.control} name="category" render={({ field }) => (
                   <FormItem><FormLabel>Category</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage/></FormItem>
                 )} />
@@ -287,7 +300,10 @@ function ProductsTab() {
                   <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage/></FormItem>
                 )} />
                 <FormField control={form.control} name="description" render={({ field }) => (
-                  <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage/></FormItem>
+                  <FormItem><FormLabel>Description (EN)</FormLabel><FormControl><Textarea placeholder="English description" {...field} /></FormControl><FormMessage/></FormItem>
+                )} />
+                <FormField control={form.control} name="descriptionAr" render={({ field }) => (
+                  <FormItem><FormLabel>الوصف (AR)</FormLabel><FormControl><Textarea dir="rtl" placeholder="الوصف بالعربي" {...field} /></FormControl><FormMessage/></FormItem>
                 )} />
                 <FormField control={form.control} name="featured" render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
