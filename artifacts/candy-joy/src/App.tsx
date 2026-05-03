@@ -23,6 +23,12 @@ setAuthTokenGetter(() => localStorage.getItem("userToken") || localStorage.getIt
 
 const queryClient = new QueryClient();
 
+const routerBase = (() => {
+  const baseUrl = import.meta.env.BASE_URL || "/";
+  if (baseUrl === "/" || baseUrl === "") return "";
+  return baseUrl.replace(/\/$/, "");
+})();
+
 function Router() {
   return (
     <Switch>
@@ -58,7 +64,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <WouterRouter base={routerBase}>
             <Router />
           </WouterRouter>
           <Toaster />
