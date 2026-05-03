@@ -38,10 +38,7 @@ export function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start">
                 <MapPin className="me-3 text-primary shrink-0 mt-1" size={20} />
-                <span className="text-muted-foreground">
-                  Refah Gift Market, Industrial Area<br />
-                  Shiebat Al Salam, Abu Dhabi
-                </span>
+                <span className="text-muted-foreground">{t("contact.address")}</span>
               </li>
               <li className="flex items-center">
                 <Phone className="me-3 text-primary shrink-0" size={20} />

@@ -7,6 +7,12 @@ import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
 
+const CATEGORY_KEYS: Record<string, string> = {
+  "Chocolates": "menu.chocolates",
+  "Imported Sweets": "menu.importedSweets",
+  "Flowers & Gifts": "menu.flowersGifts",
+};
+
 export default function Menu() {
   const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState("All");
@@ -94,12 +100,12 @@ export default function Menu() {
                     />
                     {product.featured && (
                       <div className="absolute top-4 end-4 bg-primary px-3 py-1 text-xs font-bold rounded-full text-primary-foreground">
-                        Featured
+                        {t("menu.featuredBadge")}
                       </div>
                     )}
                   </div>
                   <div className="p-6">
-                    <div className="text-xs font-medium text-primary mb-2 uppercase tracking-wider">{product.category}</div>
+                    <div className="text-xs font-medium text-primary mb-2 uppercase tracking-wider">{CATEGORY_KEYS[product.category] ? t(CATEGORY_KEYS[product.category]) : product.category}</div>
                     <h3 className="text-lg font-serif font-semibold mb-2 line-clamp-1">{product.name}</h3>
                     <p className="text-muted-foreground text-sm mb-4 line-clamp-2 h-10">{product.description}</p>
                     <div className="flex items-center justify-between mt-auto">
@@ -123,7 +129,7 @@ export default function Menu() {
           ) : (
             <div className="text-center py-20">
               <h3 className="text-2xl font-serif text-foreground mb-2">{t("menu.noProducts")}</h3>
-              <p className="text-muted-foreground">Try adjusting your search or category filter.</p>
+              <p className="text-muted-foreground">{t("menu.filterHint")}</p>
             </div>
           )}
         </div>

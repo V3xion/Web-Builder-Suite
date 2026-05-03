@@ -7,6 +7,12 @@ import { useListProducts, useListReviews } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
 
+const CATEGORY_KEYS: Record<string, string> = {
+  "Chocolates": "menu.chocolates",
+  "Imported Sweets": "menu.importedSweets",
+  "Flowers & Gifts": "menu.flowersGifts",
+};
+
 export default function Home() {
   const { t } = useTranslation();
   const { data: products, isLoading: isLoadingProducts } = useListProducts({ featured: true });
@@ -117,7 +123,7 @@ export default function Home() {
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute top-4 start-4 bg-background/90 backdrop-blur-sm px-3 py-1 text-xs font-medium rounded-full text-primary">
-                        {product.category}
+                        {CATEGORY_KEYS[product.category] ? t(CATEGORY_KEYS[product.category]) : product.category}
                       </div>
                     </div>
                     <div className="p-6">
