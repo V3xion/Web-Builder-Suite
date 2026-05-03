@@ -546,6 +546,71 @@ paths:
         "401":
           description: Unauthorized
 
+  /admin/users:
+    get:
+      operationId: adminListUsers
+      tags: [admin]
+      summary: List all registered users (admin only)
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUserRecord"
+        "401":
+          description: Unauthorized
+
+  /admin/users/{id}/password:
+    put:
+      operationId: adminChangeUserPassword
+      tags: [admin]
+      summary: Change a user's password (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminChangeUserPasswordBody"
+      responses:
+        "200":
+          description: Password changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessMessage"
+        "401":
+          description: Unauthorized
+        "404":
+          description: User not found
+
+  /admin/users/{id}:
+    delete:
+      operationId: adminDeleteUser
+      tags: [admin]
+      summary: Delete a user account (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: User deleted
+        "401":
+          description: Unauthorized
+        "404":
+          description: User not found
+
 components:
   schemas:
     HealthStatus:
@@ -871,6 +936,34 @@ components:
           type: string
       required:
         - message
+
+    AdminUserRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - fullName
+        - email
+        - phone
+        - createdAt
+
+    AdminChangeUserPasswordBody:
+      type: object
+      properties:
+        newPassword:
+          type: string
+      required:
+        - newPassword
 
     AdminStats:
       type: object

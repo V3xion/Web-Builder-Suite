@@ -147,6 +147,18 @@ export interface SuccessMessage {
   message: string;
 }
 
+export interface AdminUserRecord {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  createdAt: string;
+}
+
+export interface AdminChangeUserPasswordBody {
+  newPassword: string;
+}
+
 export interface AdminStats {
   totalProducts: number;
   totalReviews: number;

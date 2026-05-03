@@ -14,11 +14,15 @@ import {
   useMarkMessageRead,
   useGetSettings,
   useUpdateSettings,
+  useAdminListUsers,
+  useAdminChangeUserPassword,
+  useAdminDeleteUser,
   getGetAdminStatsQueryKey,
   getListProductsQueryKey,
   getListReviewsQueryKey,
   getListMessagesQueryKey,
-  getGetSettingsQueryKey
+  getGetSettingsQueryKey,
+  getAdminListUsersQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -38,7 +42,9 @@ import {
   Trash2,
   Edit,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Users,
+  KeyRound
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -69,6 +75,7 @@ export default function AdminDashboard() {
     { id: "products", label: "Products", icon: Package },
     { id: "reviews", label: "Reviews", icon: Star },
     { id: "messages", label: "Messages", icon: MessageSquare },
+    { id: "users", label: "Users", icon: Users },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
@@ -114,6 +121,7 @@ export default function AdminDashboard() {
         {activeTab === "products" && <ProductsTab />}
         {activeTab === "reviews" && <ReviewsTab />}
         {activeTab === "messages" && <MessagesTab />}
+        {activeTab === "users" && <UsersTab />}
         {activeTab === "settings" && <SettingsTab />}
       </main>
     </div>
@@ -460,6 +468,167 @@ function MessagesTab() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+const changePasswordSchema = z.object({
+  newPassword: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string(),
+}).refine((d) => d.newPassword === d.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+function UsersTab() {
+  const { data: users, isLoading } = useAdminListUsers({ query: { queryKey: getAdminListUsersQueryKey() } });
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const changePassword = useAdminChangeUserPassword();
+  const deleteUser = useAdminDeleteUser();
+
+  const [selectedUser, setSelectedUser] = useState<{ id: number; fullName: string } | null>(null);
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+
+  const form = useForm<z.infer<typeof changePasswordSchema>>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: { newPassword: "", confirmPassword: "" },
+  });
+
+  const openPasswordDialog = (user: { id: number; fullName: string }) => {
+    setSelectedUser(user);
+    form.reset({ newPassword: "", confirmPassword: "" });
+    setIsPasswordDialogOpen(true);
+  };
+
+  const onSubmitPassword = (values: z.infer<typeof changePasswordSchema>) => {
+    if (!selectedUser) return;
+    changePassword.mutate(
+      { id: selectedUser.id, data: { newPassword: values.newPassword } },
+      {
+        onSuccess: () => {
+          toast({ title: `Password updated for ${selectedUser.fullName}` });
+          setIsPasswordDialogOpen(false);
+        },
+        onError: () => {
+          toast({ title: "Failed to update password", variant: "destructive" });
+        },
+      }
+    );
+  };
+
+  const handleDeleteUser = (id: number, name: string) => {
+    if (confirm(`Are you sure you want to permanently delete ${name}'s account? This cannot be undone.`)) {
+      deleteUser.mutate({ id }, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: getAdminListUsersQueryKey() });
+          toast({ title: `${name}'s account deleted` });
+        },
+        onError: () => {
+          toast({ title: "Failed to delete user", variant: "destructive" });
+        },
+      });
+    }
+  };
+
+  if (isLoading) return <Skeleton className="h-64 w-full" />;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-serif font-bold text-foreground">Registered Users</h1>
+          <p className="text-muted-foreground mt-1">{users?.length ?? 0} total users</p>
+        </div>
+      </div>
+
+      <div className="bg-card rounded-xl border border-border/10 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-background/50 text-muted-foreground uppercase">
+              <tr>
+                <th className="px-6 py-3">Name</th>
+                <th className="px-6 py-3">Email</th>
+                <th className="px-6 py-3">Phone</th>
+                <th className="px-6 py-3">Joined</th>
+                <th className="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users?.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-10 text-center text-muted-foreground">No registered users yet.</td>
+                </tr>
+              )}
+              {users?.map((user) => (
+                <tr key={user.id} className="border-b border-border/10 last:border-0 hover:bg-background/50">
+                  <td className="px-6 py-4 font-medium text-foreground">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">
+                        {user.fullName.charAt(0).toUpperCase()}
+                      </div>
+                      <span>{user.fullName}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-muted-foreground">{user.email}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{user.phone || <span className="italic opacity-50">—</span>}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{new Date(user.createdAt).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 text-right space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openPasswordDialog({ id: user.id, fullName: user.fullName })}
+                    >
+                      <KeyRound size={14} className="mr-1.5" />
+                      Password
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => handleDeleteUser(user.id, user.fullName)}
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Change Password — {selectedUser?.fullName}</DialogTitle>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmitPassword)} className="space-y-4">
+              <FormField control={form.control} name="newPassword" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>New Password</FormLabel>
+                  <FormControl><Input type="password" placeholder="Min. 6 characters" {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="confirmPassword" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl><Input type="password" placeholder="Repeat new password" {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <div className="flex justify-end space-x-3 pt-2">
+                <Button type="button" variant="outline" onClick={() => setIsPasswordDialogOpen(false)}>Cancel</Button>
+                <Button type="submit" disabled={changePassword.isPending}>
+                  {changePassword.isPending ? "Saving…" : "Save Password"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

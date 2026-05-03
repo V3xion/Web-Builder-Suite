@@ -364,3 +364,37 @@ export const GetAdminStatsResponse = zod.object({
     }),
   ),
 });
+
+/**
+ * @summary List all registered users (admin only)
+ */
+export const AdminListUsersResponseItem = zod.object({
+  id: zod.number(),
+  fullName: zod.string(),
+  email: zod.string(),
+  phone: zod.string(),
+  createdAt: zod.string(),
+});
+export const AdminListUsersResponse = zod.array(AdminListUsersResponseItem);
+
+/**
+ * @summary Change a user's password (admin only)
+ */
+export const AdminChangeUserPasswordParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const AdminChangeUserPasswordBody = zod.object({
+  newPassword: zod.string(),
+});
+
+export const AdminChangeUserPasswordResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
+ * @summary Delete a user account (admin only)
+ */
+export const AdminDeleteUserParams = zod.object({
+  id: zod.coerce.number(),
+});
